@@ -2248,6 +2248,17 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
 
 		case WM_DPICHANGED:
 		{
+			pNppParam->_dpiManager.init(wParam);
+
+			RECT* const prcNewWindow = (RECT*)lParam;
+			SetWindowPos(hwnd,
+				NULL,
+				prcNewWindow->left,
+				prcNewWindow->top,
+				prcNewWindow->right - prcNewWindow->left,
+				prcNewWindow->bottom - prcNewWindow->top,
+				SWP_NOZORDER | SWP_NOACTIVATE);
+
 			return TRUE;
 		}
 

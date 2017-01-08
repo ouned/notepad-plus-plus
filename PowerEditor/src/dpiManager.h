@@ -31,9 +31,14 @@
 class DPIManager
 {
 public:
-    DPIManager() { 
-		init();
+    DPIManager() {
+		WPARAM defaultDPI = MAKEWPARAM(96, 96);
+		init(defaultDPI);
 	};
+
+	DPIManager(WPARAM dpi) {
+		init(dpi);
+	}
     
     // Get screen DPI.
     int getDPIX() { return _dpiX; };
@@ -81,27 +86,17 @@ public:
     int pointsToPixels(int pt) { return MulDiv(pt, _dpiY, 72); };
 
     // Invalidate any cached metrics.
-    void Invalidate() { init(); };
+	void init(WPARAM dpi)
+	{
+		_dpiX = LOWORD(dpi);
+		_dpiY = HIWORD(dpi);
+	};
 
 private:
 	// X and Y DPI values are provided, though to date all 
     // Windows OS releases have equal X and Y scale values
     int _dpiX;			
     int _dpiY;
-
-
-	void init() {
-	    HDC hdc = GetDC(NULL);
-        if (hdc)
-        {
-            // Initialize the DPIManager member variable
-            // This will correspond to the DPI setting
-            // With all Windows OS's to date the X and Y DPI will be identical					
-            _dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
-            _dpiY = GetDeviceCaps(hdc, LOGPIXELSY);
-            ReleaseDC(NULL, hdc);
-        }
-	};
 
     // This returns a 96-DPI scaled-down equivalent value for nIndex 
     // For example, the value 120 at 120 DPI setting gets scaled down to 96		
