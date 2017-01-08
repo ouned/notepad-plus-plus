@@ -31,12 +31,13 @@
 class DPIManager
 {
 public:
-    DPIManager() {
-		WPARAM defaultDPI = MAKEWPARAM(96, 96);
-		init(defaultDPI);
-	};
+	DPIManager(WPARAM dpi = MAKEWPARAM(96, 96)) {
+		HMODULE user32_module = GetModuleHandle(L"User32"); // User32 should be already loaded
+		if (user32_module != NULL) {
+			typedef BOOL(WINAPI *EnableNonClientDpiScaling_t)(HWND hwnd);
+			win32api_EnableNonClientDpiScaling = (EnableNonClientDpiScaling_t)GetProcAddress(user32_module, "EnableNonClientDpiScaling");
+		}
 
-	DPIManager(WPARAM dpi) {
 		init(dpi);
 	}
     
@@ -92,6 +93,15 @@ public:
 		_dpiY = HIWORD(dpi);
 	};
 
+	BOOL enableNonClientDpiScaling(HWND hwnd)
+	{
+		if (win32api_EnableNonClientDpiScaling) {
+			return win32api_EnableNonClientDpiScaling(hwnd);
+		}
+
+		return TRUE;
+	}
+
 private:
 	// X and Y DPI values are provided, though to date all 
     // Windows OS releases have equal X and Y scale values
@@ -114,6 +124,10 @@ private:
     {
         return MulDiv(GetSystemMetrics(nIndex), 96, _dpiY); 
     }
+
+	// Available since Windows 10.0.14393 (2016)
+	typedef BOOL(WINAPI *EnableNonClientDpiScaling_t)(HWND hwnd);
+	EnableNonClientDpiScaling_t win32api_EnableNonClientDpiScaling = NULL;
 };
 
 #endif //DPIMANAGER_H

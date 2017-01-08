@@ -76,10 +76,14 @@ LRESULT CALLBACK Notepad_plus_Window::Notepad_plus_Proc(HWND hwnd, UINT message,
 	if (hwnd == NULL)
 		return FALSE;
 
+	NppParameters *pNppParam = NppParameters::getInstance();
+
 	switch(message)
 	{
 		case WM_NCCREATE:
 		{
+			pNppParam->_dpiManager.enableNonClientDpiScaling(hwnd);
+
 			// First message we get the ptr of instantiated object
 			// then stock it into GWLP_USERDATA index in order to retrieve afterward
 			Notepad_plus_Window *pM30ide = static_cast<Notepad_plus_Window *>((reinterpret_cast<LPCREATESTRUCT>(lParam))->lpCreateParams);
