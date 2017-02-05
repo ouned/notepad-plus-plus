@@ -110,6 +110,8 @@ public :
 		return _toolBarIcons.replaceIcon(whichLst, iconIndex, iconLocation);
 	};
 
+	void dpiChanged() { reset(true); }
+
 	void registerDynBtn(UINT message, toolbarIcons* hBmp);
 
 	void doPopop(POINT chevPoint);	//show the popup if buttons are hidden

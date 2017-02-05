@@ -2263,6 +2263,8 @@ LRESULT Notepad_plus::process(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
 				prcNewWindow->bottom - prcNewWindow->top,
 				SWP_NOZORDER | SWP_NOACTIVATE);
 
+			_toolBar.dpiChanged();
+
 			return TRUE;
 		}
 
